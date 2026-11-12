@@ -1,0 +1,122 @@
+[
+  {
+    "key": "DEMO0001",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 1",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0002",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 2",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0003",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 3",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0004",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 4",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0005",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 5",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0006",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 6",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0007",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 7",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0008",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 8",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0009",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 9",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  },
+  {
+    "key": "DEMO0010",
+    "itemType": "book",
+    "title": "Aprendizaje sintético volumen 10",
+    "creators": [
+      {
+        "firstName": "Ana",
+        "lastName": "Ejemplo"
+      }
+    ],
+    "date": "2026"
+  }
+]
