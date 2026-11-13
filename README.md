@@ -106,7 +106,7 @@ The input is a UTF-8 JSON list. Each record requires a nonempty string `key` and
 
 `data/` (except its empty placeholder), databases, `.venv/`, local reports, and private files are ignored by Git. The importer does not write back to Zotero. Explicitly inspect any real input before importing it: the full supplied record is retained in the local database.
 
-The GitHub repository is private. Linking to it does not grant visitors access. The demo and documentation are designed to be shared using fictional records only.
+The GitHub repository is public for portfolio review. All included example records are fictional; personal library metadata and local test databases remain outside version control.
 
 ## Repository guide
 
