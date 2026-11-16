@@ -9,6 +9,6 @@ if sys.prefix == sys.base_prefix:
 root = Path(__file__).resolve().parent
 source = root / 'src/pkm'
 destination = Path(sysconfig.get_paths()['purelib']) / 'pkm'
-shutil.copytree(source, destination, dirs_exist_ok=True,
+shutil.copytree(source, destination, dirs_exist_ok=True, copy_function=shutil.copyfile,
                 ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
 print(f'Instalado en {destination}. Usa: python -m pkm --help')

@@ -2,7 +2,8 @@ import argparse
 import json
 import sqlite3
 import sys
-from .catalog import import_json, search
+from .catalog import import_json
+from .unified import search_resources as search
 
 
 def main():
@@ -16,7 +17,13 @@ def main():
     finder.add_argument('query')
     finder.add_argument('--db', required=True)
     finder.add_argument('--limit', type=int, default=20)
+    interface = commands.add_parser('gui', help='Abrir la interfaz local')
+    interface.add_argument('--db', help='Catálogo PKM existente (opcional)')
     args = parser.parse_args()
+    if args.command == 'gui':
+        from .gui import launch
+        launch(args.db)
+        return 0
     try:
         result = (import_json(args.db, args.input, args.source) if args.command == 'import-json'
                   else search(args.db, args.query, args.limit))

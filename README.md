@@ -1,16 +1,16 @@
 # Personal Knowledge Management System
 
-### Local-first bibliographic data engineering · MVP v0.1.0
+### Local-first bibliographic data engineering · MVP v0.2.0
 
 A small, working Python pipeline for importing bibliographic JSON, keeping a local catalog consistent, and finding references through SQLite full-text search.
 
-**Python 3.11+ · SQLite FTS5 · No third-party runtime dependencies · 8 automated tests**
+**Python 3.11+ · SQLite FTS5 · No third-party runtime dependencies · 17 automated tests**
 
-> **Status:** functional MVP under active development. This is a command-line application. Broader source integrations and AI-assisted retrieval are future work.
+> **Status:** functional MVP under active development. Includes a native local interface and command-line tools. AI-assisted retrieval, automatic synchronization, and study-plan generation remain future work.
 
 ## Why this project
 
-A bibliographic catalog needs more than an import button: repeat imports must not create duplicates, changed records must refresh search results, and personal library data must stay separate from shareable code. This MVP implements and tests those foundations before adding a user interface or AI features.
+A bibliographic catalog needs more than an import button: repeat imports must not create duplicates, changed records must refresh search results, and personal library data must stay separate from shareable code. This MVP implements and tests those foundations, exposes a native local interface, and keeps AI features as future work.
 
 ## What works today
 
@@ -20,7 +20,8 @@ A bibliographic catalog needs more than an import button: repeat imports must no
 | Validation | Checks the entire input before opening the destination database |
 | Repeat imports | Uses `(source, key)` identity to keep existing records unchanged |
 | Updates | Refreshes metadata and the search index for an existing identity |
-| Full-text search | Searches titles and creators, including accent-insensitive matching |
+| Unified search | Searches reference titles/creators and enriched Drive metadata/contents, with accent-insensitive matching |
+| Native interface | Opens catalogs, imports JSON, loads synthetic data, searches both sources, and opens verified source URL schemes |
 | Local storage | Uses SQLite transactions; preserves each imported source object |
 | Privacy | Runs offline; accesses only the explicitly provided input and destination |
 
@@ -35,7 +36,7 @@ flowchart LR
     E --> F[CLI search]
 ```
 
-No background synchronization, cloud service, or automatic connection to a personal library is used by the importer.
+No background synchronization or cloud service is used by the importer. The optional Zotero snapshot script makes explicit local read requests only.
 
 ## Quick start
 
@@ -46,7 +47,10 @@ python3 -m venv .venv
 source .venv/bin/activate
 python install_local.py
 python examples/demo.py
+python examples/demo_unified.py
 ```
+
+Open the native interface with `python launch_gui.py` (requires Tkinter). On macOS, you can also use `Abrir PKM.command`. See [local interface instructions](docs/INTERFAZ_LOCAL.md) and [enriched catalog schema](docs/CATALOGO_ENRIQUECIDO.md).
 
 The local installer copies the module into the active virtual environment without downloading packages. Run it again after editing `src/pkm`. The included `pyproject.toml` also supports conventional pip installation when build tools are available.
 
@@ -80,7 +84,7 @@ Run the import again to see unchanged-record counts. Use a distinct `--source` f
 
 ## Validation evidence
 
-- **8 automated tests:** import and idempotence; FTS updates; validation without altering an existing catalog; duplicate input keys; API envelopes and library namespaces; malformed input; source/destination separation; read-only search without database creation.
+- **17 automated tests:** import and idempotence; FTS updates; validation without altering an existing catalog; duplicate input keys; API envelopes and library namespaces; malformed input; source/destination separation; read-only search without database creation. Additional tests cover interface catalog access, unified results, contents queries, limits, and preservation of database bytes.
 - **Synthetic demo:** 10 initial imports, zero duplicate inserts on repetition, one metadata update, and search-index verification.
 - **Local Zotero integration check:** 9 real references verified for titles, creators, dates, title/creator search, and repeat-import behavior. Only aggregate results are described here; the references and test database are not included.
 
@@ -90,7 +94,7 @@ Run the tests against the source code:
 PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
-Validated locally on macOS arm64 with Python 3.13.5 and SQLite 3.45.3. No CI workflow or broader platform compatibility verification is claimed.
+Validated locally on macOS arm64 with Python 3.13.5 and SQLite 3.45.3. Native-interface behavior was manually checked on macOS. No CI workflow or broader platform compatibility verification is claimed.
 
 ## Input contract and current limits
 
@@ -100,7 +104,7 @@ The input is a UTF-8 JSON list. Each record requires a nonempty string `key` and
 - Repeated keys within one input file are rejected.
 - The importer loads the complete JSON file in memory.
 - Search treats query words literally and combines them with AND; it does not search attachments or document full text.
-- BibTeX, RIS, keyless CSL JSON, attachment import, live library synchronization, a graphical interface, and AI retrieval are not implemented.
+- BibTeX, RIS, keyless CSL JSON, attachment import, live library synchronization, automatic Drive inventory/enrichment from the UI and AI retrieval are not implemented.
 
 ## Privacy and repository boundaries
 
@@ -111,10 +115,12 @@ The GitHub repository is public for portfolio review. All included example recor
 ## Repository guide
 
 ```text
-src/pkm/                         Import, search, and command-line interface
+src/pkm/                         Import, unified search, native GUI, and CLI
+launch_gui.py                    Virtual-environment-aware macOS launcher
+scripts/import_complete.py       Read-only local Zotero snapshot
 examples/demo.py                 Self-checking synthetic demonstration
 examples/references.synthetic.json  Ten fictional bibliographic records
-tests/test_catalog.py            Eight automated tests
+tests/                           Seventeen automated tests
 docs/DEMO.md                     Walkthrough and captured demo output
 install_local.py                 Offline installation into an active venv
 data/                           Local catalogs; excluded from version control
