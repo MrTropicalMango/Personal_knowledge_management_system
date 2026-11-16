@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "personal-knowledge-management-system"
-version = "0.2.0"
+version = "0.3.0"
 description = "Local bibliographic JSON importer and SQLite search"
 requires-python = ">=3.11"
 dependencies = []

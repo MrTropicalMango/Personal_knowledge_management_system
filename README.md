@@ -1,10 +1,10 @@
 # Personal Knowledge Management System
 
-### Local-first bibliographic data engineering · MVP v0.2.0
+### Local-first bibliographic data engineering · MVP v0.3.0
 
 A small, working Python pipeline for importing bibliographic JSON, keeping a local catalog consistent, and finding references through SQLite full-text search.
 
-**Python 3.11+ · SQLite FTS5 · No third-party runtime dependencies · 17 automated tests**
+**Python 3.11+ · SQLite FTS5 · No third-party runtime dependencies · 36 automated tests**
 
 > **Status:** functional MVP under active development. Includes a native local interface and command-line tools. AI-assisted retrieval, automatic synchronization, and study-plan generation remain future work.
 
@@ -84,7 +84,7 @@ Run the import again to see unchanged-record counts. Use a distinct `--source` f
 
 ## Validation evidence
 
-- **17 automated tests:** import and idempotence; FTS updates; validation without altering an existing catalog; duplicate input keys; API envelopes and library namespaces; malformed input; source/destination separation; read-only search without database creation. Additional tests cover interface catalog access, unified results, contents queries, limits, and preservation of database bytes.
+- **36 automated tests:** import and idempotence; FTS updates; validation without altering an existing catalog; duplicate input keys; API envelopes and library namespaces; malformed input; source/destination separation; read-only search without database creation. Additional tests cover interface catalog access, unified results, contents queries, limits, and preservation of database bytes.
 - **Synthetic demo:** 10 initial imports, zero duplicate inserts on repetition, one metadata update, and search-index verification.
 - **Local Zotero integration check:** 9 real references verified for titles, creators, dates, title/creator search, and repeat-import behavior. Only aggregate results are described here; the references and test database are not included.
 
@@ -120,8 +120,16 @@ launch_gui.py                    Virtual-environment-aware macOS launcher
 scripts/import_complete.py       Read-only local Zotero snapshot
 examples/demo.py                 Self-checking synthetic demonstration
 examples/references.synthetic.json  Ten fictional bibliographic records
-tests/                           Seventeen automated tests
+tests/                           Thirty-six automated tests
 docs/DEMO.md                     Walkthrough and captured demo output
 install_local.py                 Offline installation into an active venv
 data/                           Local catalogs; excluded from version control
 ```
+
+## Additional local library adapters
+
+The PKM now includes metadata import adapters for Apple Books and Kindle SQLite snapshots, and sanitized Kobo metadata JSON. Unified read-only search also supports private Dropbox resource catalogs. These adapters do not copy book contents or bypass DRM. See [library adapter contracts](docs/IMPORTADORES_LOCALES.md).
+
+Samples, previews, incomplete metadata, and records not confirmed as library entries are distinguished during import. Repeated imports preserve source identities. This is an additive catalog: removing a book upstream does not automatically remove it from PKM. Current download rights and reading access must be verified separately.
+
+Security exclusions are checked during resource search and before opening supported source links. These checks do not replace antivirus scanning. All automated tests use synthetic records. Personal catalogs, exports, security registries, and bibliographic inventories remain outside this public repository.

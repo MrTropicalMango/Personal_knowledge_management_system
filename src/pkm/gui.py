@@ -7,7 +7,7 @@ from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
 
 from .catalog import import_json
-from .unified import search_resources as search, list_resources as list_records
+from .unified import search_resources as search, list_resources as list_records, is_resource_excluded
 import webbrowser
 from urllib.parse import urlparse
 
@@ -56,7 +56,7 @@ class CatalogApp:
         self.button(finder, 'Buscar', self.find).pack(side='left', padx=4)
         self.button(finder, 'Ver catálogo', self.browse).pack(side='left')
         self.button(finder, 'Abrir fuente', self.open_source).pack(side='left', padx=4)
-        ttk.Label(outer, text='Busca títulos, creadores e índices de Drive · Hasta 200 resultados por consulta').pack(anchor='w', pady=(0, 6))
+        ttk.Label(outer, text='Busca títulos, creadores e índices de Drive y Dropbox · Hasta 200 resultados por consulta').pack(anchor='w', pady=(0, 6))
         table_frame = ttk.Frame(outer)
         table_frame.pack(fill='both', expand=True)
         self.table = ttk.Treeview(table_frame, columns=('title', 'authors', 'date', 'source'), show='headings', selectmode='browse')
@@ -204,18 +204,27 @@ class CatalogApp:
         selected = self.table.selection()
         if selected and selected[0] in self.rows:
             row = self.rows[selected[0]]
-            self.set_detail(f"{row['title']}\nClave: {row['source_key']} · Origen: {row['source']} · DOI: {row['doi'] or 'No disponible'}\n{row.get('metadata_status', '')}\n{row.get('url', '')}")
+            self.set_detail(f"{row['title']}\nClave: {row['source_key']} · Origen: {row['source']} · DOI: {row['doi'] or 'No disponible'}\n{row.get('metadata_status', '')}\n{row.get('path', '')}\n{row.get('url', '')}")
 
     def open_source(self):
         selected = self.table.selection()
         if not selected:
             messagebox.showinfo('Selecciona un resultado', 'Selecciona primero una referencia o un archivo.', parent=self.root)
             return
-        url = self.rows.get(selected[0], {}).get('url', '')
+        row = self.rows.get(selected[0], {})
+        try:
+            excluded = is_resource_excluded(self.db.get(), row.get('source',''), row.get('source_key',''))
+        except (OSError, sqlite3.Error):
+            messagebox.showerror('No se pudo comprobar la seguridad', 'No se abrirá la fuente hasta poder consultar las exclusiones.', parent=self.root)
+            return
+        if excluded:
+            messagebox.showerror('Recurso excluido', 'Este archivo está excluido por una alerta de seguridad. No se abrirá.', parent=self.root)
+            return
+        url = row.get('url', '')
         parsed = urlparse(url)
-        allowed = (parsed.scheme == 'https' and parsed.hostname == 'drive.google.com') or (parsed.scheme == 'zotero' and parsed.netloc == 'select')
+        allowed = (parsed.scheme == 'https' and parsed.hostname in ('drive.google.com', 'www.dropbox.com', 'dropbox.com')) or (parsed.scheme == 'zotero' and parsed.netloc == 'select')
         if not allowed:
-            messagebox.showinfo('Sin enlace de apertura', 'Este registro no tiene un enlace de Drive o Zotero válido.', parent=self.root)
+            messagebox.showinfo('Sin enlace de apertura', 'Este registro no tiene un enlace de Drive, Dropbox o Zotero válido.', parent=self.root)
             return
         webbrowser.open(url)
 
